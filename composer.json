@@ -1,0 +1,51 @@
+{
+    "name": "krez/trellis-global",
+    "description": "test",
+    "authors": [
+        {
+            "name": "Krez Freas",
+            "email": "krez@19ideas.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "sites/example.com",
+                "version": "dev-dev",
+                "source": {
+                    "url": "git@github.com:roots/bedrock.git",
+                    "type": "git",
+                    "reference": "dev"
+                }
+            }
+        }
+    ],
+    "require": {
+        "sites/example.com": "dev-dev",
+        "guzzlehttp/guzzle": "~6.0",
+        "maknz/slack": "^1.7",
+        "symfony/console": "@stable",
+        "symfony/yaml": "^3.2"
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "./src/composer-post-update-cmd.sh"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "TrellisHelper\\": "src"
+        }
+    },
+    "extra": {
+        "installer-paths": {
+            "web/app/mu-plugins/{$name}/": [
+                "type:wordpress-muplugin"
+            ]
+        }
+    }
+}

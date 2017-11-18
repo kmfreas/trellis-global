@@ -1,0 +1,177 @@
+---
+- name: Sync {{site}} uploads and database between environments
+  hosts: web:&{{ env }}
+  remote_user: "{{ web_user }}"
+
+  pre_tasks:
+    - name: Ensure site is valid
+      connection: local
+      fail:
+        msg: "Site `{{ site | default('') }}` is not valid. Available sites to sync: {{ wordpress_sites.keys() | join(', ') }}"
+      when: wordpress_sites[site | default('')] is not defined
+
+    - name: Ensure parameters are defined
+      fail:
+        msg: "Please ensure all parameters (site, mode, sync_cmd, env) are defined"
+      when: (site is not defined) or (mode is not defined) or (sync_cmd is not defined) or (env is not defined)
+
+  vars:
+    project: "{{ wordpress_sites[site] }}"
+    project_root: "{{ www_root }}/{{ site }}"
+    project_uploads: "{{ www_root }}/{{ site }}/shared/uploads"
+    project_web_dir: "{{ project_root }}/current/web"
+    timestamp: "{{ansible_date_time.year}}{{ansible_date_time.month}}{{ansible_date_time.day}}{{ansible_date_time.hour}}{{ansible_date_time.minute}}"
+    sql_backup_dir: "sql-dumps/{{site}}/{{timestamp}}.{{env}}.{{mode}}/"
+    vagrant_sql_file: "{{site}}.local.{{timestamp}}.sql"
+    host_sql_file: "{{site}}.{{env}}.{{timestamp}}.sql"
+    host_url: "{{ project.site_hosts | map(attribute='canonical') | first }}"
+    site_hosts: "{{ project.site_hosts}}"
+    dev_hosts: "{{hostvars['development_host']['wordpress_sites'][site]['site_hosts']}}"
+    dev_url: "{{hostvars['development_host']['wordpress_sites'][site]['site_hosts'] | map(attribute='canonical') | first }}"
+    search_replace_options: "--all-tables"
+
+  tasks:
+  - block:
+    - name: Back up database on vagrant box
+      delegate_to: development_host
+      command: wp db export ~/{{ vagrant_sql_file }}
+      args:
+        chdir: "{{ project_web_dir }}"
+
+    - name: Move vagrant database to backup directory {{sql_backup_dir}}
+      delegate_to: development_host
+      fetch:
+        src: "~/{{ vagrant_sql_file }}"
+        dest: "{{ sql_backup_dir }}"
+        flat: yes
+
+    - name: Back up database on {{env}}
+      command: wp db export ~/{{ host_sql_file }}
+      args:
+        chdir: "{{ project_web_dir }}"
+
+    - name: Pull database from {{env}} to backup directory {{sql_backup_dir}}
+      synchronize:
+        src: "~/{{ host_sql_file }}"
+        dest: "{{ sql_backup_dir }}"
+        mode: pull
+        rsync_opts: 
+          - "--bwlimit=6000"
+
+    - name: Remove database file on vagrant box
+      delegate_to: development_host
+      file: path="~/{{ vagrant_sql_file }}" state=absent
+
+    - name: Remove database file on {{env}}
+      file: path="~/{{ host_sql_file }}" state=absent
+
+    - block:
+      - name: Upload database to {{env}}
+        synchronize:
+          src: "{{ sql_backup_dir }}{{ vagrant_sql_file}}"
+          dest: "~/"
+          rsync_opts: 
+            - "--bwlimit=600"
+
+      - name: Import database on {{env}}
+        command: wp db import ~/{{ vagrant_sql_file }} --url={{host_url}}
+        args:
+          chdir: "{{ project_web_dir }}"
+
+      - name: Perform search replace for main domain on {{env}} database
+        command: wp search-replace {{dev_url}} {{host_url}} --url={{dev_url}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+
+      - name: Perform search replace for all domains on {{env}} database
+        command: wp search-replace {{item[0].canonical}} {{item[1].canonical}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+        with_together:
+          - "{{dev_hosts}}"
+          - "{{site_hosts}}"
+        when: "{{site_hosts | count}} > 1"
+
+      - name: Search and replace http to https for {{env}} environment
+        command: wp search-replace http://{{host_url}} https://{{host_url}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+        when: wordpress_sites[site]['ssl']['enabled'] == True
+
+      - name: Remove imported database file on {{env}}
+        file: path="~/{{ vagrant_sql_file }}" state=absent
+
+      when: mode == "push"
+
+    - block:
+      - name: Copy database to vagrant
+        delegate_to: development_host
+        copy:
+          src: "{{ sql_backup_dir }}{{ host_sql_file }}"
+          dest: "~/"
+
+      - name: Import database on vagrant
+        delegate_to: development_host
+        command: wp db import ~/{{ host_sql_file }} --url={{site}}
+        args:
+          chdir: "{{ project_web_dir }}"
+
+      - name: Perform search replace for main domain on vagrant database
+        delegate_to: development_host
+        command: wp search-replace {{host_url}} {{dev_url}} --url={{host_url}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+
+      - name: Perform search replace for all domains on vagrant database
+        delegate_to: development_host
+        command: wp search-replace {{item.0['canonical']}} {{item.1['canonical']}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+        with_together:
+          - "{{site_hosts}}"
+          - "{{dev_hosts}}"
+        when: "{{site_hosts | count}} > 1"
+
+      - name: Search and replace https to http for dev environment
+        delegate_to: development_host
+        command: wp search-replace https://{{item['canonical']}} http://{{item['canonical']}} {{search_replace_options}}
+        args:
+          chdir: "{{ project_web_dir }}"
+        with_items:
+          - "{{dev_hosts}}"
+        when: hostvars['development_host']['wordpress_sites'][site]['ssl']['enabled'] != True
+
+      - name: Remove imported database file on vagrant
+        delegate_to: development_host
+        file: path="~/{{ host_sql_file }}" state=absent
+
+      when: mode == "pull"
+
+    when: sync_cmd != "uploads"
+
+  - block:
+    - name: Push uploads
+      synchronize:
+        src: "{{ project.local_path }}/web/app/uploads/"
+        dest: "{{ project_root }}/current/web/app/uploads/"
+        rsync_opts: 
+          - "--exclude=.DS_Store"
+          - "--bwlimit=600"
+      when: mode == "push"
+
+    - name: Pull uploads
+      synchronize:
+        src: "{{ project_root }}/current/web/app/uploads/"
+        dest: "{{ project.local_path }}/web/app/uploads/"
+        mode: pull
+        rsync_opts: 
+          - "--exclude=.DS_Store"
+          - "--bwlimit=6000"
+      when: mode == "pull"
+
+    when: sync_cmd != "db"
+
+
+
+
+

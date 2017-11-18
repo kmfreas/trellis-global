@@ -1,0 +1,21 @@
+wordpress_sites:
+  example.com:
+    site_hosts:
+      -
+        canonical: example.com
+        redirects:
+          - www.example.com
+    local_path: ../sites/example.com
+    repo: 'git@github.com:roots/bedrock.git'
+    branch: production
+    multisite:
+      enabled: false
+    ssl:
+      enabled: true
+      provider: letsencrypt
+      hsts_include_subdomains: false
+    cache:
+      enabled: true
+    theme:
+      version: sage-8
+      folder: example-theme

@@ -1,0 +1,5 @@
+sites
+trellis/sql-dumps
+composer.lock
+vendor
+tmp-trellis-helper

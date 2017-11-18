@@ -1,0 +1,20 @@
+---
+- name: Backup Vagrant Database
+  hosts: development_host
+  remote_user: "{{ web_user }}"
+  vars:
+    timestamp: "{{ansible_date_time.year}}{{ansible_date_time.month}}{{ansible_date_time.day}}{{ansible_date_time.hour}}{{ansible_date_time.minute}}"
+    vagrant_sql_file: "all.local.{{timestamp}}.sql"
+
+  tasks:
+  - name: Back up database on vagrant box
+    shell: sudo mysqldump -u root -pdevpw --all-databases > {{ vagrant_sql_file }}
+    args:
+      chdir: "~/"
+  - name: Copy backup from vagrant to site folder
+    fetch:
+      src: "~/{{ vagrant_sql_file }}"
+      dest: "sql-dumps/vagrant/"
+      flat: yes
+  - name: Remove database file on vagrant box
+    file: path="~/{{ vagrant_sql_file }}" state=absent
