@@ -34,7 +34,7 @@
 # `dev.yml` playbook with such options if you were edit the options
 # into the Vagrantfile's `config.vm.provision` section.
 
-development_host ansible_host=192.168.50.4 ansible_connection=ssh ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/default/virtualbox/private_key
+development_host ansible_host=192.168.50.3 ansible_connection=ssh ansible_user=vagrant ansible_ssh_private_key_file=.vagrant/machines/default/virtualbox/private_key
 
 [development]
 development_host

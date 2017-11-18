@@ -1,21 +1,55 @@
 wordpress_sites:
-  example.com:
+  gourmasianbuffalo.com:
     site_hosts:
-      -
-        canonical: example.com
+      - canonical: gourmasianbuffalo.com
         redirects:
-          - www.example.com
-    local_path: ../sites/example.com
-    repo: 'git@github.com:roots/bedrock.git'
+          - www.gourmasianbuffalo.com
+    local_path: ../sites/gourmasianbuffalo.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/gourmasian.git # replace with your Git repo URL
     branch: production
     multisite:
       enabled: false
     ssl:
       enabled: true
       provider: letsencrypt
-      hsts_include_subdomains: false
     cache:
       enabled: true
     theme:
       version: sage-8
-      folder: example-theme
+      folder: gourmasian-theme
+  obst-farm.com:
+    site_hosts:
+      - canonical: obst-farm.com
+        redirects:
+          - www.obst-farm.com
+    local_path: ../sites/obst-farm.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/obst-farm.git # replace with your Git repo URL
+    branch: production
+    multisite:
+      enabled: false
+    ssl:
+      enabled: true
+      provider: letsencrypt
+    cache:
+      enabled: true
+    theme:
+      version: sage-8
+      folder: obst-farm-theme
+  trivitro.com:
+    site_hosts:
+      - canonical: trivitro.com
+        redirects:
+          - www.trivitro.com
+    local_path: ../sites/trivitro.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/trivitro.git # replace with your Git repo URL
+    branch: production
+    multisite:
+      enabled: false
+    ssl:
+      enabled: true
+      provider: letsencrypt
+    cache:
+      enabled: true
+    theme:
+      version: sage-8
+      folder: trivitro-theme

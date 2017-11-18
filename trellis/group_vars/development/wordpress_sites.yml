@@ -1,12 +1,39 @@
 wordpress_sites:
-  example.com:
+  gourmasianbuffalo.com:
     site_hosts:
-      -
-        canonical: example.dev
+      - canonical: gourmasianbuffalo.dev
         redirects:
-          - www.example.dev
-    local_path: ../sites/example.com
-    admin_email: admin@example.dev
+          - www.gourmasianbuffalo.dev
+    local_path: ../sites/gourmasianbuffalo.com # path targeting local Bedrock site directory (relative to Ansible root)
+    admin_email: admin@gourmasianbuffalo.dev
+    multisite:
+      enabled: false
+    ssl:
+      enabled: false
+      provider: self-signed
+    cache:
+      enabled: false
+  obst-farm.com:
+    site_hosts:
+      - canonical: obst-farm.dev
+        redirects:
+          - www.obst-farm.dev
+    local_path: ../sites/obst-farm.com # path targeting local Bedrock site directory (relative to Ansible root)
+    admin_email: admin@obst-farm.dev
+    multisite:
+      enabled: false
+    ssl:
+      enabled: true
+      provider: self-signed
+    cache:
+      enabled: false
+  trivitro.com:
+    site_hosts:
+      - canonical: trivitro.dev
+        redirects:
+          - www.trivitro.dev
+    local_path: ../sites/trivitro.com # path targeting local Bedrock site directory (relative to Ansible root)
+    admin_email: admin@trivitro.dev
     multisite:
       enabled: false
     ssl:

@@ -1,10 +1,9 @@
 wordpress_sites:
-  example.com:
+  gourmasianbuffalo.com:
     site_hosts:
-      -
-        canonical: staging.example.com
-    local_path: ../sites/example.com
-    repo: 'git@github.com:roots/bedrock.git'
+      - canonical: gourmasianbuffalo.krez.me
+    local_path: ../sites/gourmasianbuffalo.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/gourmasian.git # replace with your Git repo URL
     branch: dev
     multisite:
       enabled: false
@@ -15,4 +14,36 @@ wordpress_sites:
       enabled: false
     theme:
       version: sage-8
-      folder: example-theme
+      folder: gourmasian-theme
+  obst-farm.com:
+    site_hosts:
+      - canonical: obst-farm.krez.me
+    local_path: ../sites/obst-farm.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/obst-farm.git # replace with your Git repo URL
+    branch: dev
+    multisite:
+      enabled: false
+    ssl:
+      enabled: true
+      provider: letsencrypt
+    cache:
+      enabled: false
+    theme:
+      version: sage-8
+      folder: obst-farm-theme
+  trivitro.com:
+    site_hosts:
+      - canonical: trivitro.krez.me
+    local_path: ../sites/trivitro.com # path targeting local Bedrock site directory (relative to Ansible root)
+    repo: git@bitbucket.org:krez_freas/trivitro.git # replace with your Git repo URL
+    branch: dev
+    multisite:
+      enabled: false
+    ssl:
+      enabled: false
+      provider: letsencrypt
+    cache:
+      enabled: false
+    theme:
+      version: sage-8
+      folder: trivitro-theme
