@@ -78,7 +78,7 @@ class NewSite extends Command
         $output->writeln('<info>Ensuring site does not exist already</info>');
         $json = json_decode(file_get_contents(getcwd() . '/composer.json'), true);
         foreach ($json['require'] as $key => $site) {
-            if ($key === '19ideas/' . $this->domain) {
+            if ($key === 'sites/' . $this->domain) {
                 throw new \Exception('Site already exists');
             }
         }
@@ -227,7 +227,7 @@ class NewSite extends Command
         $password = $helper->ask($input, $output, $passQuestion);
         $client   = new Client();
         try {
-            $response = $client->request('POST', 'https://api.bitbucket.org/2.0/repositories/19ideas/' . $this->domain, [
+            $response = $client->request('POST', 'https://api.bitbucket.org/2.0/repositories/krez_freas/' . $this->domain, [
                 'auth' => [$username, $password],
             ]);
         } catch (ClientException $e) {
@@ -238,7 +238,7 @@ class NewSite extends Command
         }
 
         shell_exec('git init');
-        shell_exec('git remote add origin git@bitbucket.org:19ideas/' . $this->domain . '.git');
+        shell_exec('git remote add origin git@bitbucket.org:krez_freas/' . $this->domain . '.git');
         shell_exec('git add --all');
         shell_exec('git commit -m "Initialize theme with bedrock, ' . $theme . '"');
         shell_exec('git push -u origin master');
@@ -260,10 +260,10 @@ class NewSite extends Command
         $repo = [
             'type'    => 'package',
             'package' => [
-                'name'    => '19ideas/' . $this->domain,
+                'name'    => 'sites/' . $this->domain,
                 'version' => 'dev-dev',
                 'source'  => [
-                    'url'       => 'git@bitbucket.org:19ideas/' . $this->domain . '.git',
+                    'url'       => 'git@bitbucket.org:krez_freas/' . $this->domain . '.git',
                     'type'      => 'git',
                     'reference' => 'dev',
                 ],
@@ -275,7 +275,7 @@ class NewSite extends Command
         usort($json['repositories'], function ($a, $b) {
             return strcmp($a['package']['name'], $b['package']['name']);
         });
-        $json['require']['19ideas/' . $this->domain] = 'dev-dev';
+        $json['require']['sites/' . $this->domain] = 'dev-dev';
         ksort($json['require']);
         file_put_contents(getcwd() . '/composer.json', json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
@@ -348,20 +348,18 @@ class NewSite extends Command
                 'wordpress_sites'       => [
                     'site_hosts' => [
                         [
-                            'canonical' => $this->name . '.19ideas.com',
+                            'canonical' => $this->name . '.krez.me',
                         ],
                     ],
                     'local_path' => '../sites/' . $this->domain,
-                    'repo'       => 'git@bitbucket.org:19ideas/' . $this->domain . '.git',
+                    'repo'       => 'git@bitbucket.org:krez_freas/' . $this->domain . '.git',
                     'branch'     => 'dev',
                     'multisite'  => [
                         'enabled' => false,
                     ],
                     'ssl'        => [
                         'enabled'  => true,
-                        'provider' => 'manual',
-                        'cert'     => '~/.ssl/19ideas.com.crt',
-                        'key'      => '~/.ssl/19ideas.com.private-key.pem',
+                        'provider' => 'letsencrypt',
                     ],
                     'cache'      => [
                         'enabled' => false,
@@ -396,7 +394,7 @@ class NewSite extends Command
                         ],
                     ],
                     'local_path' => '../sites/' . $this->domain,
-                    'repo'       => 'git@bitbucket.org:19ideas/' . $this->domain . '.git',
+                    'repo'       => 'git@bitbucket.org:krez_freas/' . $this->domain . '.git',
                     'branch'     => 'production',
                     'multisite'  => [
                         'enabled' => false,
