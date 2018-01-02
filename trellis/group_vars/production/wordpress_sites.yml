@@ -1,11 +1,32 @@
 wordpress_sites:
+  goodfortunes716.com:
+    site_hosts:
+      -
+        canonical: goodfortunes716.com
+        redirects:
+          - www.goodfortunes716.com
+    local_path: ../sites/goodfortunes716.com
+    repo: 'git@bitbucket.org:krez_freas/goodfortunes716.com.git'
+    branch: production
+    multisite:
+      enabled: false
+    ssl:
+      enabled: false
+      provider: letsencrypt
+      hsts_include_subdomains: false
+    cache:
+      enabled: false
+    theme:
+      version: sage-9
+      folder: goodfortunes716-theme
   gourmasianbuffalo.com:
     site_hosts:
-      - canonical: gourmasianbuffalo.com
+      -
+        canonical: gourmasianbuffalo.com
         redirects:
           - www.gourmasianbuffalo.com
-    local_path: ../sites/gourmasianbuffalo.com # path targeting local Bedrock site directory (relative to Ansible root)
-    repo: git@bitbucket.org:krez_freas/gourmasian.git # replace with your Git repo URL
+    local_path: ../sites/gourmasianbuffalo.com
+    repo: 'git@bitbucket.org:krez_freas/gourmasian.git'
     branch: production
     multisite:
       enabled: false
@@ -19,11 +40,12 @@ wordpress_sites:
       folder: gourmasian-theme
   obst-farm.com:
     site_hosts:
-      - canonical: obst-farm.com
+      -
+        canonical: obst-farm.com
         redirects:
           - www.obst-farm.com
-    local_path: ../sites/obst-farm.com # path targeting local Bedrock site directory (relative to Ansible root)
-    repo: git@bitbucket.org:krez_freas/obst-farm.git # replace with your Git repo URL
+    local_path: ../sites/obst-farm.com
+    repo: 'git@bitbucket.org:krez_freas/obst-farm.git'
     branch: production
     multisite:
       enabled: false
@@ -37,11 +59,12 @@ wordpress_sites:
       folder: obst-farm-theme
   trivitro.com:
     site_hosts:
-      - canonical: trivitro.com
+      -
+        canonical: trivitro.com
         redirects:
           - www.trivitro.com
-    local_path: ../sites/trivitro.com # path targeting local Bedrock site directory (relative to Ansible root)
-    repo: git@bitbucket.org:krez_freas/trivitro.git # replace with your Git repo URL
+    local_path: ../sites/trivitro.com
+    repo: 'git@bitbucket.org:krez_freas/trivitro.git'
     branch: production
     multisite:
       enabled: false

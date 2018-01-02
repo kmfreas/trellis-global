@@ -1,53 +1,72 @@
 {
     "name": "krez/trellis-global",
     "description": "Site package manager",
-    "authors": [{
-        "name": "Krez Freas",
-        "email": "kmfreas@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Krez Freas",
+            "email": "kmfreas@gmail.com"
+        }
+    ],
     "config": {
         "sort-packages": true
     },
-    "repositories": [{
-        "type": "package",
-        "package": {
-            "name": "sites/gourmasianbuffalo.com",
-            "version": "dev-dev",
-            "source": {
-                "url": "git@bitbucket.org:krez_freas/gourmasian.git",
-                "type": "git",
-                "reference": "dev"
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "sites/goodfortunes716.com",
+                "version": "dev-dev",
+                "source": {
+                    "url": "git@bitbucket.org:krez_freas/goodfortunes716.com.git",
+                    "type": "git",
+                    "reference": "dev"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "sites/gourmasianbuffalo.com",
+                "version": "dev-dev",
+                "source": {
+                    "url": "git@bitbucket.org:krez_freas/gourmasian.git",
+                    "type": "git",
+                    "reference": "dev"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "sites/obst-farm.com",
+                "version": "dev-dev",
+                "source": {
+                    "url": "git@bitbucket.org:krez_freas/obst-farm.git",
+                    "type": "git",
+                    "reference": "dev"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "sites/trivitro.com",
+                "version": "dev-dev",
+                "source": {
+                    "url": "git@bitbucket.org:krez_freas/trivitro.git",
+                    "type": "git",
+                    "reference": "dev"
+                }
             }
         }
-    }, {
-        "type": "package",
-        "package": {
-            "name": "sites/obst-farm.com",
-            "version": "dev-dev",
-            "source": {
-                "url": "git@bitbucket.org:krez_freas/obst-farm.git",
-                "type": "git",
-                "reference": "dev"
-            }
-        }
-    }, {
-        "type": "package",
-        "package": {
-            "name": "sites/trivitro.com",
-            "version": "dev-dev",
-            "source": {
-                "url": "git@bitbucket.org:krez_freas/trivitro.git",
-                "type": "git",
-                "reference": "dev"
-            }
-        }
-    }],
+    ],
     "require": {
-        "sites/gourmasianbuffalo.com": "dev-dev",
-        "sites/trivitro.com": "dev-dev",
-        "sites/obst-farm.com": "dev-dev",
         "guzzlehttp/guzzle": "~6.0",
         "maknz/slack": "^1.7",
+        "sites/goodfortunes716.com": "dev-dev",
+        "sites/gourmasianbuffalo.com": "dev-dev",
+        "sites/obst-farm.com": "dev-dev",
+        "sites/trivitro.com": "dev-dev",
         "symfony/console": "@stable",
         "symfony/yaml": "^3.2"
     },
