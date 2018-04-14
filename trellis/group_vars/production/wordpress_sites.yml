@@ -63,6 +63,8 @@ wordpress_sites:
         canonical: trivitro.com
         redirects:
           - www.trivitro.com
+          - vitroclean.com
+          - www.vitroclean.com
     local_path: ../sites/trivitro.com
     repo: 'git@bitbucket.org:krez_freas/trivitro.git'
     branch: production
@@ -76,3 +78,4 @@ wordpress_sites:
     theme:
       version: sage-8
       folder: trivitro-theme
+    nginx_wordpress_site_conf: nginx-includes/trivitro.com.conf.child

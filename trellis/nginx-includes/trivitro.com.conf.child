@@ -1,0 +1,33 @@
+{% extends 'roles/wordpress-setup/templates/wordpress-site.conf.j2' %}
+{%- block redirects_domains %}
+{% if site_hosts_redirects | default([]) | count %}
+# Redirect some domains
+{% endif %}
+{% for host in item.value.site_hosts if host.redirects | default([]) %}
+server {
+  {% if ssl_enabled -%}
+  listen [::]:443 ssl http2;
+  listen 443 ssl http2;
+  {% endif -%}
+  listen [::]:80;
+  listen 80;
+  server_name {{ host.redirects | join(' ') }};
+
+  {{ self.https() -}}
+
+  {{ self.acme_challenge() -}}
+
+  {{ self.includes_d() -}}
+
+  location / {
+    if ($host = vitroclean.com) {
+      return 301 {{ ssl_enabled | ternary('https', 'http') }}://{{ host.canonical }}/products/vitroclean/;
+    }
+    if ($host = www.vitroclean.com) {
+      return 301 {{ ssl_enabled | ternary('https', 'http') }}://{{ host.canonical }}/products/vitroclean/;
+    }
+    return 301 {{ ssl_enabled | ternary('https', 'http') }}://{{ host.canonical }}$request_uri;
+  }
+}
+{% endfor %}
+{% endblock %}
