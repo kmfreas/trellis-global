@@ -162,16 +162,16 @@ Vagrant.configure('2') do |config|
     prl.memory = vconfig.fetch('vagrant_memory')
     prl.update_guest_tools = true
   end
-  
-  config.trigger.before :destroy do
-    info "Dumping the database before destroying the VM..."
-    run "ssh-add .vagrant/machines/default/virtualbox/private_key"
-    run "ansible-playbook vagrant-db-backup.yml"
-  end
 
-  config.trigger.before :provision do
-    info "Dumping the database before provisioning the VM..."
-    run "ssh-add .vagrant/machines/default/virtualbox/private_key"
-    run "ansible-playbook vagrant-db-backup.yml"
-  end
+  # config.trigger.before :destroy do
+    # info "Dumping the database before destroying the VM..."
+    # run "ssh-add .vagrant/machines/default/virtualbox/private_key"
+    # run "ansible-playbook vagrant-db-backup.yml"
+  # end
+
+  # config.trigger.before :provision do
+    # info "Dumping the database before provisioning the VM..."
+    # run "ssh-add .vagrant/machines/default/virtualbox/private_key"
+    # run "ansible-playbook vagrant-db-backup.yml"
+  # end
 end
