@@ -17,6 +17,11 @@ Checkout the personal branch to see how I use it for personal clients of mine.
   - vagrant-bindfs
   - vagrant-hostmanager
 
+> Last install known to work:
+> Vagrant 2.2.10
+> Python 2.7 :(
+> ansible 2.4.0.0
+
 ### Setup
 - clone repository `git clone git@github.com:kmfreas/trellis-global.git`
 - run `composer install` from repository root
